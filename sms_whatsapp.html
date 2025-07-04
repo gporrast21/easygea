@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyChat Gea</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="scripts/script.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen">
+<header class="bg-red-600 text-white px-4 py-2 shadow-md fixed top-0 left-0 right-0 z-50">
+  <div class="flex justify-between items-center relative">
+    
+    <!-- Título -->
+    <div>
+      <h1 class="text-xl font-semibold">
+        <a href="index.html" class="text-decoration-none text-reset">💬 EasyChat Gea</a>
+      </h1>
+      <p class="text-xs text-red-100">Mensajes predeterminados para atención al cliente | versión gpt 1.01</p>
+    </div>  
+
+    <!-- Campo de nombre + botón juntos -->
+    <div class="flex items-center gap-2">
+      <input
+        id="userName"
+        type="text"
+        placeholder="Coloca tú nombre:"
+        class="p-2 text-black rounded w-48"
+      />
+      <button
+        onclick="recargarPagina()"
+        class="px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+        title="Recargar"
+      >
+        🔁
+      </button>
+    </div>
+
+  </div>
+</header>
+
+
+
+  <div class="flex pt-20 ml-72 h-[calc(100vh-5rem)] overflow-hidden">
+
+    <!-- Menú lateral -->
+    <aside class="w-72 fixed top-0 left-0 h-screen bg-gray-800 p-6 overflow-y-auto">
+      <h1 class="text-2xl font-bold mb-4">EasyChat Gea 😺</h1>
+    <ul class="space-y-2">
+  <!-- 1. Saludos -->
+  <li>
+    <button onclick="toggleSubmenu('saludosSubmenu')" class="font-normal w-full text-left">1. Saludos</button>
+    <ul id="saludosSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-saludoOutbound" onclick="loadChat('saludoOutbound')" class="text-gray-400 hover:underline">Saludos Outbound</button></li>
+      <li><button id="btn-saludoInbound" onclick="loadChat('saludoInbound')" class="text-gray-400 hover:underline">Saludos Inbound</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 2. Preguntas Filtro -->
+  <li>
+    <button onclick="toggleSubmenu('filtroSubmenu')" class="font-normal w-full text-left">2. Preguntas Filtro</button>
+    <ul id="filtroSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-equipoCliente" onclick="loadChat('equipoCliente')" class="text-gray-400 hover:underline">Equipo del Cliente</button></li>
+      <li><button id="btn-ubicacionCliente" onclick="loadChat('ubicacionCliente')" class="text-gray-400 hover:underline">Ubicación del Cliente</button></li>
+      <li><button id="btn-lineasAdicionales" onclick="loadChat('lineasAdicionales')" class="text-gray-400 hover:underline">Lineas Adicionales</button></li>
+      <li><button id="btn-preferenciaCliente" onclick="loadChat('preferenciaCliente')" class="text-gray-400 hover:underline">Preferencias del cliente</button></li>
+      <li><button id="btn-presupuestoCliente" onclick="loadChat('presupuestoCliente')" class="text-gray-400 hover:underline">Presupuesto del Cliente</button></li>
+      <li><button id="btn-preguntasAdicionales" onclick="loadChat('preguntasAdicionales')" class="text-gray-400 hover:underline">Preguntas Adicionales</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+  <!-- 3. Tiempo de Espera -->
+  <li>
+    <button onclick="toggleSubmenu('esperaSubmenu')" class="font-normal w-full text-left">3. Tiempo de Espera</button>
+    <ul id="esperaSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button  id="btn-esperaBreve" onclick="loadChat('esperaBreve')" class="text-gray-400 hover:underline">Tiempo de Espera</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 4. Ofrecimiento -->
+  <li>
+    <button onclick="toggleSubmenu('ofrecimientoSubmenu')" class="font-normal w-full text-left">4. Ofrecimiento</button>
+    <ul id="ofrecimientoSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-preOferta" onclick="loadChat('preOferta')" class="text-gray-400 hover:underline">Pre - Oferta</button></li>
+      <li><button id="btn-equipoCuota" onclick="loadChat('equipoCuota')" class="text-gray-400 hover:underline">Equipo a Cuotas</button></li>
+      <li><button id="btn-equipoContado" onclick="loadChat('equipoContado')" class="text-gray-400 hover:underline">Equipo al Contado</button></li>  
+      <li><button id="btn-entidadBancaria" onclick="loadChat('entidadBancaria')" class="text-gray-400 hover:underline">Con entidad Bancaria</button></li>
+      <li><button id="btn-ofrecimientoAccesorio" onclick="loadChat('ofrecimientoAccesorio')" class="text-gray-400 hover:underline">Ofrecimiento de Accesorio</button></li>
+      <li><button id="btn-ofrecimientoPm" onclick="loadChat('ofrecimientoPm')" class="text-gray-400 hover:underline">Ofrecimiento de PM</button></li>
+      <li><button id="btn-nodeseaPm" onclick="loadChat('nodeseaPm')" class="text-gray-400 hover:underline">No desea Protección Móvil</button></li>
+
+      
+    </ul>
+  </li>
+  <hr class="my-4 border-gray-600">
+
+  <!-- 5. Pre Cierres -->
+  <li>
+    <button onclick="toggleSubmenu('precierreSubmenu')" class="font-normal w-full text-left">5. Pre Cierres</button>
+    <ul id="precierreSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-delivery" onclick="loadChat('delivery')" class="text-gray-400 hover:underline">Delivery</button></li>
+      <li><button id="btn-sinDelivery" onclick="loadChat('sinDelivery')" class="text-gray-400 hover:underline">Sin Delivery</button></li>
+      <li><button id="btn-ventaCac" onclick="loadChat('ventaCac')" class="text-gray-400 hover:underline">Para venta CAC</button></li>
+      <li><button id="btn-colorEquipo" onclick="loadChat('colorEquipo')" class="text-gray-400 hover:underline">Color de Equipo</button></li>
+      <li><button id="btn-conPortabilidad" onclick="loadChat('conPortabilidad')" class="text-gray-400 hover:underline">Con Portabilidad</button></li>
+      <li><button id="btn-conLineanueva" onclick="loadChat('conLineanueva')" class="text-gray-400 hover:underline">Con linea nueva</button></li>
+      <li><button id="btn-contacto" onclick="loadChat('contacto')" class="text-gray-400 hover:underline">Contacto</button></li>
+      <li><button id="btn-varios" onclick="loadChat('varios')" class="text-gray-400 hover:underline">Varios</button></li>
+      
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 6. Características Especiales -->
+  <li>
+    <button onclick="toggleSubmenu('caracteristicasSubmenu')" class="font-normal w-full text-left">6. Características Especiales</button>
+    <ul id="caracteristicasSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_camara" onclick="loadChat('c_camara')" class="text-gray-400 hover:underline">Cámara</button></li>
+      <li><button id="btn-c_bateria" onclick="loadChat('c_bateria')" class="text-gray-400 hover:underline">Batería</button></li>
+      <li><button id="btn-c_pantalla" onclick="loadChat('c_pantalla')" class="text-gray-400 hover:underline">Pantalla</button></li>
+      <li><button id="btn-c_procesador" onclick="loadChat('c_procesador')" class="text-gray-400 hover:underline">Procesador</button></li>
+      <li><button id="btn-c_ram" onclick="loadChat('c_ram')" class="text-gray-400 hover:underline">Ram</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 7. Argumentos -->
+  <li>
+    <button onclick="toggleSubmenu('argumentosSubmenu')" class="font-normal w-full text-left">7. Argumentos</button>
+    <ul id="argumentosSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_descuentoOperador" onclick="loadChat('c_descuentoOperador')" class="text-gray-400 hover:underline">Descuento Operador</button></li>
+      <li><button id="btn-c_contadoNo" onclick="loadChat('c_contadoNo')" class="text-gray-400 hover:underline">No quiere contado</button></li>
+      <li><button id="btn-c_precioEquipo" onclick="loadChat('c_precioEquipo')" class="text-gray-400 hover:underline">Precio de equipo</button></li>
+      <li><button id="btn-c_Retail" onclick="loadChat('c_Retail')" class="text-gray-400 hover:underline">Prefiere comprar en Retail</button></li>
+      <li><button id="btn-c_cuotaInicial" onclick="loadChat('c_cuotaInicial')" class="text-gray-400 hover:underline">Cuota Inicial</button></li>
+      <li><button id="btn-c_sinStock" onclick="loadChat('c_sinStock')" class="text-gray-400 hover:underline">Sin sctock</button></li>
+      <li><button id="btn-c_cambioPromocion" onclick="loadChat('c_cambioPromocion')" class="text-gray-400 hover:underline">Cambio de promoción</button></li>
+      <li><button id="btn-c_permanencia" onclick="loadChat('c_permanencia')" class="text-gray-400 hover:underline">No quiere contado</button></li>
+      <li><button id="btn-c_accesorioaContado" onclick="loadChat('c_accesorioaContado')" class="text-gray-400 hover:underline">Accesorio al contado</button></li>
+      <li><button id="btn-c_convenioBanco" onclick="loadChat('c_convenioBanco')" class="text-gray-400 hover:underline">Convenio con el Banco</button></li>
+      <li><button id="btn-c_catalogox" onclick="loadChat('c_catalogox')" class="text-gray-400 hover:underline">Otros</button></li>
+       
+    
+    
+    </ul>
+  </li>
+  <hr class="my-4 border-gray-600">
+
+  <!-- 8. Beneficios -->
+  <li>
+    <button onclick="toggleSubmenu('beneficiosSubmenu')" class="font-normal w-full text-left">8. Beneficios</button>
+    <ul id="beneficiosSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_beneficios" onclick="loadChat('c_beneficios')" class="text-gray-400 hover:underline">Claro Club y Claro Drive</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 9. Revocatoria de Consentimiento -->
+  <li>
+    <button onclick="toggleSubmenu('revocatoriaSubmenu')" class="font-normal w-full text-left">9. Revocatoria de Consentimiento</button>
+    <ul id="revocatoriaSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_revocatoria" onclick="loadChat('c_revocatoria')" class="text-gray-400 hover:underline">Revocatoria de consentimiento</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 10. Asesor no Disponible -->
+  <li>
+    <button onclick="toggleSubmenu('asesorSubmenu')" class="font-normal w-full text-left">10. Asesor no Disponible</button>
+    <ul id="asesorSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_asesornoready" onclick="loadChat('c_asesornoready')" class="text-gray-400 hover:underline">Asesor No Disponible</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 11. Derivaciones -->
+  <li>
+    <button onclick="toggleSubmenu('derivacionesSubmenu')" class="font-normal w-full text-left">11. Derivaciones</button>
+    <ul id="derivacionesSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_derivaciones" onclick="loadChat('c_derivaciones')" class="text-gray-400 hover:underline">Derivaciones</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 12. Bloqueo de Deuda -->
+  <li>
+    <button onclick="toggleSubmenu('bloqueoSubmenu')" class="font-normal w-full text-left">12. Bloqueo de Deuda</button>
+    <ul id="bloqueoSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_bloqueoDeuda" onclick="loadChat('c_bloqueoDeuda')" class="text-gray-400 hover:underline">Bloqueo deuda</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+  <!-- 13. Cliente no Responde -->
+  <li>
+    <button onclick="toggleSubmenu('norespondeSubmenu')" class="font-normal w-full text-left">13. Cliente no Responde</button>
+    <ul id="norespondeSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_clientenoresponde" onclick="loadChat('c_clientenoresponde')" class="text-gray-400 hover:underline">Cliente no responde</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 14. Despedida -->
+  <li>
+    <button onclick="toggleSubmenu('despedidaSubmenu')" class="font-normal w-full text-left">14. Despedida</button>
+    <ul id="despedidaSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_despedidaVenta" onclick="loadChat('c_despedidaVenta')" class="text-gray-400 hover:underline">Despedida venta</button></li>
+      <li><button id="btn-c_despedidaNoVenta" onclick="loadChat('c_despedidaNoVenta')" class="text-gray-400 hover:underline">Despedida no venta</button></li>
+    </ul>
+  </li>
+    <hr class="my-4 border-gray-600">
+
+  <!-- 15. Recuperar Ventas -->
+  <li>
+    <button onclick="toggleSubmenu('recuperarSubmenu')" class="font-normal w-full text-left">15. Recuperar Ventas</button>
+    <ul id="recuperarSubmenu" class="ml-4 mt-1 space-y-1 hidden">
+      <li><button id="btn-c_recuperarVentas" onclick="loadChat('c_recuperarVentas')" class="text-gray-400 hover:underline">Recuperar ventas</button></li>
+    </ul>
+  </li>
+</ul>
+    <hr class="my-4 border-gray-600">
+    </aside>
+
+    <!-- Contenido principal -->
+    
+    <main class="flex-1 p-6 overflow-auto">
+      <h2 id="sectionTitle" class="text-xl font-bold mb-2">Mensaje Generado </h2>
+
+<!-- Contenedor general -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-2 border-red-500 p-4 rounded-xl bg-gray-800 shadow-md">
+  <!-- Campo: Nombre del Cliente -->
+  <div class="flex flex-col">
+    <label for="clientName" class="text-sm text-white mb-1">👤 Nombre del Cliente</label>
+    <input
+      id="clientName"
+      type="text"
+      placeholder="Ej: Giancarlos"
+      class="text-sm p-1.5 rounded border border-gray-300 focus:border-red-400 focus:outline-none text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: tarjeta del banco -->
+  <div id="tarjetaBancoField" class="flex flex-col hidden">
+    <label for="tarjetaBanco" class="text-sm text-white mb-1">🏦 Entidad Bancaría</label>
+    <select
+      id="tarjetaBanco"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione Entidad</option>
+        <option>Scotiabank</option>
+        <option>Interbank</option>
+        <option>BCP</option>
+        <option>BBVA</option>
+        <option>Financiera Oh</option>
+        <option>Cencosud</option>
+        <option>Diners Club</option>
+    </select>
+  </div>
+
+  <!-- Campo: Marca Teléfono -->
+  <div id="marcaTelefonoField" class="flex flex-col hidden">
+    <label for="marcaTelefono" class="text-sm text-white mb-1">📱 Marca Teléfono</label>
+    <select
+      id="marcaTelefono"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Selecciona una marca</option>
+          <option>Apple iPhone</option>
+          <option>Honor</option>
+          <option>Honor Magic</option>
+          <option>Motorola Moto</option>
+          <option>Motorola EDGE</option>
+          <option>Oppo</option>
+          <option>Oppo Reno</option>
+          <option>Samsung Galaxy</option>
+          <option>Vivo</option>
+          <option>Xiaomi</option>
+          <option>Xiaomi Redmi</option>
+          <option>ZTE</option>
+          <option>ZTE Nubia</option>
+    </select>
+  </div>
+
+  <!-- Campo: Modelo de Equipo -->
+  <div id="modeloEquipoField" class="flex flex-col flex-1 hidden">
+    <label for="modeloEquipo" class="text-sm text-white mb-1">🛠 Modelo Equipo</label>
+    <input
+      id="modeloEquipo"
+      type="text"
+      placeholder="Ej: A54"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+  <!-- Campo: Almacenamiento -->
+  <div id="almacenEquipoField" class="flex flex-col hidden">
+    <label for="almacenEquipo" class="text-sm text-white mb-1">💾 Almacenamiento</label>
+    <select
+      id="almacenEquipo"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione GB</option>
+        <option>64 GB</option>
+        <option>128 GB</option>
+        <option>256 GB</option>
+        <option>512 GB</option>
+        <option>1 TB</option>
+    </select>
+  </div>
+
+  <!-- Campo: Bonus -->
+  <div id="bonusField" class="flex flex-col hidden">
+    <label for="bonus" class="text-sm text-white mb-1">🎁 Bonus</label>
+    <select
+      id="bonus"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione Bonus</option>
+        <option>Sin Bonus</option>
+        <option>+ Audifonos</option>
+        <option>+ Audifonos BT</option>
+        <option>+ Cargador</option>
+        <option>+ Batería Externa</option>
+    </select>
+  </div>
+
+  <!-- Campo: Cuota Inicial -->
+  <div id="cuotaInicialField" class="flex flex-col flex-1 hidden">
+    <label for="cuotaInicial" class="text-sm text-white mb-1">📄 Cuota Inicial</label>
+    <input
+      id="cuotaInicial"
+      type="text"
+      placeholder="S/. 100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+
+  
+  <!-- Campo: Cuota Mensual -->
+  <div id="cuotaMensualField" class="flex flex-col flex-1 hidden">
+    <label for="cuotaMensual" class="text-sm text-white mb-1">📄 Cuota Mensual</label>
+    <input
+      id="cuotaMensual"
+      type="text"
+      placeholder="S/. 100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+  <!-- Campo: Cuota Mensual -->
+  <div id="cuotaTarjetaField" class="flex flex-col flex-1 hidden">
+    <label for="cuotaTarjeta" class="text-sm text-white mb-1">📄 Número total de cuotas</label>
+    <input
+      id="cuotaTarjeta"
+      type="text"
+      placeholder=" 12"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+
+  <!-- Campo: Financiamiento -->
+  <div id="financiamientoField" class="flex flex-col hidden">
+    <label for="financiamiento" class="text-sm text-white mb-1">💰 Financiamiento</label>
+    <select
+      id="financiamiento"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione Financiamiento</option>
+        <option>6 cuotas</option>
+        <option>12 cuotas</option>
+    </select>
+  </div>
+
+    <!-- Campo: Plan Cliente -->
+  <div id="planClienteField" class="flex flex-col hidden">
+    <label for="planCliente" class="text-sm text-white mb-1">📶 Plan del Cliente</label>
+    <select
+      id="planCliente"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione Plan</option>
+        <option>📈 Plan: S/. 29.90 🌐 10GB </option>
+        <option>📈 Plan: S/. 30.90 🌐 15GB </option>
+        <option>📈 Plan: S/. 31.90 🌐 16GB </option>
+        <option>📈 Plan: S/. 39.90 🌐 25GB </option>
+        <option>📈 Plan: S/. 40.90 🌐 28GB </option>
+        <option>📈 Plan: S/. 42.90 🌐 29GB </option>
+        <option>📈 Plan: S/. 49.90 🌐 35GB </option>
+        <option>📈 Plan: S/. 51.90 🌐 40GB </option>
+        <option>📈 Plan: S/. 53.90 🌐 45GB </option>
+        <option>📈 Plan: S/. 55.90 🌐 65GB </option>
+        <option>📈 Plan: S/. 57.90 🌐 56GB </option>
+        <option>📈 Plan: S/. 60.90 🌐 53GB </option>
+        <option>📈 Plan: S/. 69.90 🌐 95GB </option>
+        <option>📈 Plan: S/. 72.90 🌐 100GB </option>
+        <option>📈 Plan: S/. 74.90 🌐 102GB </option>
+        <option>📈 Plan: S/. 79.90 🌐 105GB </option>
+        <option>📈 Plan: S/. 82.90 🌐 110GB </option>
+        <option>📈 Plan: S/. 84.90 🌐 111GB </option>
+        <option>📈 Plan: S/. 93.90 🌐 115GB </option>
+        <option>📈 Plan: S/. 95.90 🌐 130GB </option>
+        <option>📈 Plan: S/. 100.90 🌐 135GB </option>
+        <option>📈 Plan: S/. 114.90 🌐 150GB </option>
+        <option>📈 Plan: S/. 159.90 🌐 160GB </option>
+        <option>📈 Plan: S/. 164.90 🌐 170GB </option>
+        <option>📈 Plan: S/. 189.90 🌐 180GB </option>
+        <option>📈 Plan: S/. 195.90 🌐 190GB </option>
+        <option>📈 Plan: S/. 289.90 🌐 190GB </option>
+        <option>📈 Plan: S/. 295.90 🌐 200GB </option>
+    </select>
+  </div>
+
+    <!-- Campo: Precio Plan Equipo -->
+  <div id="precioPlanField" class="flex flex-col flex-1 hidden">
+    <label for="precioPlan" class="text-sm text-white mb-1">🧾 Precio del plan y equipo</label>
+    <input
+      id="precioPlan"
+      type="text"
+      placeholder="S/. 100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+      <!-- Campo: Precio total del equipo -->
+  <div id="precioTotalEquipoField" class="flex flex-col flex-1 hidden">
+    <label for="precioTotalEquipo" class="text-sm text-white mb-1">💲 Precio total del equipo</label>
+    <input
+      id="precioTotalEquipo"
+      type="text"
+      placeholder="S/. 100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+  
+    <!-- Campo: Descuento Claro Puntos -->
+  <div id="descuentoClaroPuntosField" class="flex flex-col flex-1 hidden">
+    <label for="descuentoClaroPuntos" class="text-sm text-white mb-1">💸 Descuento Claro Puntos</label>
+    <input
+      id="descuentoClaroPuntos"
+      type="text"
+      placeholder="100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+      <!-- Campo: EquipoOfertado -->
+  <div id="equipoOfertadoField" class="flex flex-col flex-1 hidden">
+    <label for="equipoOfertado" class="text-sm text-white mb-1">📱 Equipo Ofertado</label>
+    <input
+      id="equipoOfertado"
+      type="text"
+      placeholder="ej: iPhone"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+      <!-- Campo: precioAccesorio -->
+  <div id="precioAccesorioField" class="flex flex-col flex-1 hidden">
+    <label for="precioAccesorio" class="text-sm text-white mb-1">💲 Precio Accsesorio</label>
+    <input
+      id="precioAccesorio"
+      type="text"
+      placeholder="S/100"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+      <!-- Campo: PM TOTAL -->
+  <div id="pmTotalField" class="flex flex-col flex-1 hidden">
+    <label for="pmTotal" class="text-sm text-white mb-1">🛡️ Protección Móvil</label>
+    <select
+      id="pmTotal"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione Protección</option>
+        <option>*S/0.60* diarios o su equivalente *S/ 18.00*</option>
+        <option>*S/0.90* diarios o su equivalente *S/ 27.00*</option>
+        <option>*S/1.50* diarios o su equivalente *S/ 45.00*</option>
+    </select>
+  </div>
+
+      <!-- Campo: Equipo color 1 -->
+  <div id="colorEquipoUnoField" class="flex flex-col flex-1 hidden">
+    <label for="colorEquipoUno" class="text-sm text-white mb-1">🎨  Color 1</label>
+    <input
+      id="colorEquipoUno"
+      type="text"
+      placeholder="Ingrese color 1"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: Equipo color 2 -->
+  <div id="colorEquipoDosField" class="flex flex-col flex-1 hidden">
+    <label for="colorEquipoDos" class="text-sm text-white mb-1">🎨  Color 2</label>
+    <input
+      id="colorEquipoDos"
+      type="text"
+      placeholder="Ingrese color 2"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: Precio Promocional Portabilidad -->
+  <div id="precioPromocionalPortabilidadField" class="flex flex-col flex-1 hidden">
+    <label for="precioPromocionalPortabilidad" class="text-sm text-white mb-1">💲 Precio Promocional</label>
+    <input
+      id="precioPromocionalPortabilidad"
+      type="text"
+      placeholder="Ingrese precio promocional"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: 1 Dia de la semana -->
+  <div id="diaSemanaField" class="flex flex-col flex-1 hidden">
+    <label for="diaSemana" class="text-sm text-white mb-1">🗓️ Dia de la Semana</label>
+    <select
+      id="diaSemana"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione día de la semana</option>
+            <option>Lunes</option>
+            <option>Martes</option>
+            <option>Miércoles</option>
+            <option>Jueves</option>
+            <option>Viernes</option>
+            <option>Sábado</option>
+            <option>Domingo</option>
+    </select>
+  </div>
+
+  
+    <!-- Campo: 2 DIA HOY -->
+  <div id="diaHoyField" class="flex flex-col flex-1 hidden">
+    <label for="diaHoy" class="text-sm text-white mb-1">🗓️ Día de Hoy</label>
+    <input
+      id="diaHoy"
+      type="text"
+      placeholder="Ingrese el día de hoy"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: 3 Mes ACTUAL -->
+  <div id="mesActualField" class="flex flex-col flex-1 hidden">
+    <label for="mesActual" class="text-sm text-white mb-1">🗓️ Mes Actual</label>
+    <select
+      id="mesActual"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    >
+      <option value="" disabled selected>Seleccione mes actual</option>
+          <option>Enero</option>
+          <option>Febrero</option>
+          <option>Marzo</option>
+          <option>Abril</option>
+          <option>Mayo</option>
+          <option>Junio</option>
+          <option>Julio</option>
+          <option>Agosto</option>
+          <option>Septiembre</option>
+          <option>Octubre</option>
+          <option>Noviembre</option>
+          <option>Diciembre</option>
+
+    </select>
+  </div>
+
+  
+    <!-- Campo: 1 Numero de camara -->
+  <div id="numeroCamaraField" class="flex flex-col flex-1 hidden">
+    <label for="numeroCamara" class="text-sm text-white mb-1">🔢📷 Número de Camaras</label>
+    <input
+      id="numeroCamara"
+      type="text"
+      placeholder="Ingrese el número de cámaras"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+      <!-- Campo: 2 Cámara principal -->
+  <div id="camaraPrincipalField" class="flex flex-col flex-1 hidden">
+    <label for="camaraPrincipal" class="text-sm text-white mb-1">📷 Cámara Principal</label>
+    <input
+      id="camaraPrincipal"
+      type="text"
+      placeholder="Ingrese cámara princial"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: 3 Cámaras Adicionales -->
+  <div id="camaraAdicionalField" class="flex flex-col flex-1 hidden">
+    <label for="camaraAdicional" class="text-sm text-white mb-1">📸➕ Cámaras Adicionales</label>
+    <input
+      id="camaraAdicional"
+      type="text"
+      placeholder="Ingrese cámaras adicionales"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: 1 BATERIA DE EQUIPO -->
+  <div id="bateriaField" class="flex flex-col flex-1 hidden">
+    <label for="bateria" class="text-sm text-white mb-1">🔋 Batería del Equipo</label>
+    <input
+      id="bateria"
+      type="text"
+      placeholder="Ingrese batería del equipo"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>
+
+    <!-- Campo: 2 carga rapida -->
+  <div id="cargaRapidaField" class="flex flex-col flex-1 hidden">
+    <label for="cargaRapida" class="text-sm text-white mb-1">⚡🔋 Carga Rápida</label>
+    <input
+      id="cargaRapida"
+      type="text"
+      placeholder="Ingrese carga rápida"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+    <!-- Campo: 1 Pulgadas Pantall -->
+  <div id="pulgadasPantallaField" class="flex flex-col flex-1 hidden">
+    <label for="pulgadasPantalla" class="text-sm text-white mb-1">📏 Pulgadas Pantalla</label>
+    <input
+      id="pulgadasPantalla"
+      type="text"
+      placeholder="Ingrese pulgadas pantalla"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+    <!-- Campo: 2 Tasa de Refresco -->
+  <div id="tasaRefrescoField" class="flex flex-col flex-1 hidden">
+    <label for="tasaRefresco" class="text-sm text-white mb-1">🔄 Tasa de Refresco</label>
+    <input
+      id="tasaRefresco"
+      type="text"
+      placeholder="Ingrese tasa fresco"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+      <!-- Campo: 1PROCESADOR DE EQUIPO -->
+  <div id="procesadorEquipoField" class="flex flex-col flex-1 hidden">
+    <label for="procesadorEquipo" class="text-sm text-white mb-1">🖥️ Procesador del Equipo</label>
+    <input
+      id="procesadorEquipo"
+      type="text"
+      placeholder="Ingrese el procesador"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+      <!-- Campo: 2 NUMERO DE NUCLEOS -->
+  <div id="numeroNucleoField" class="flex flex-col flex-1 hidden">
+    <label for="numeroNucleo" class="text-sm text-white mb-1">🧠 Número de núcleos</label>
+    <input
+      id="numeroNucleo"
+      type="text"
+      placeholder="Ingrese numero de núcleos"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+  
+    <!-- Campo: 3 VELOCIDAD PROCESADO -->
+  <div id="velocidadProcesadorField" class="flex flex-col flex-1 hidden">
+    <label for="velocidadProcesador" class="text-sm text-white mb-1">⚡ Velocidad del procesador</label>
+    <input
+      id="velocidadProcesador"
+      type="text"
+      placeholder="Ingrese velocidad del procesador"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div>  
+
+    <!-- Campo: RAM EQUIPO -->
+  <div id="ramEquipoField" class="flex flex-col flex-1 hidden">
+    <label for="ramEquipo" class="text-sm text-white mb-1">💾 Ram del equipo</label>
+    <input
+      id="ramEquipo"
+      type="text"
+      placeholder="Ingrese la ram del equipo"
+      class="text-sm p-1.5 rounded border border-gray-300 text-black w-full"
+    />
+  </div> 
+
+
+</div>
+
+  <!-- fin Campo General -->
+
+
+
+<div class="border-4 border-red-500 p-4 rounded bg-gray-700 max-h-64 overflow-y-auto mt-6">
+  <p id="messageBox" class="whitespace-pre-wrap text-sm">
+    <!-- Aquí se mostrará el mensaje -->
+  </p>
+</div>
+
+
+
+
+      <button onclick="copyMessage()" class="mt-4 bg-red-500 px-4 py-2 rounded hover:bg-red-600">
+        Copiar mensaje
+      </button>
+
+    </main>
+
+    
+  </div>
+  
+</body>
+
+
+
+</html>
